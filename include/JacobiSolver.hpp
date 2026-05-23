@@ -12,5 +12,4 @@ class JacobiSolver
     public:
     JacobiSolver(size_t max_it, Real tol) : max_iter(max_it), tolerance(tol) {}
     void solve(Domain &d) const;
-
 };

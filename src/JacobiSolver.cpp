@@ -96,4 +96,6 @@ void JacobiSolver::solve(Domain &d) const
                 d.U.row(1).data(), recv_counts.data(), displacements.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // Se BCs sono = 0 va bene così, ma nisogna aggiungere riga 0 e n-1 se le considero Non Nulle
+
+    std::cout << "Problem Solved" << std::endl;
 }

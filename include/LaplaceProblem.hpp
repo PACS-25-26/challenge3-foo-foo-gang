@@ -6,8 +6,8 @@ using namespace Traits;
 
 struct LaplaceProblem
 {
-    Real lb;
-    Real ub;
+    Real lb = 0.;
+    Real ub = 1.;
     Function force;
     // Function bound_conds;
 };
@@ -28,5 +28,7 @@ class Domain
 
     inline Real getCoord(size_t i) const
     {return problem.lb + i * h;}
+
+    void exportVTK(const std::string &filename) const;
 };
 
