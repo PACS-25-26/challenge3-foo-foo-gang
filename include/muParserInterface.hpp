@@ -1,6 +1,6 @@
 #pragma once
 
-#include "muParser.h"
+#include <muParser.h>
 #include "TypeTraits.hpp"
 #include <string>
 #include <iostream>
