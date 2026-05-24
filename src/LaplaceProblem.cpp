@@ -29,7 +29,7 @@ void Domain::exportVTK(const std::string &filename) const
     // Solution Points
     file << "POINT DATA " << n*n << "\n";
     file << "SCALARS u(xh,yh) double 1\n";
-    file << "LOOKUP_TABLE default";
+    file << "LOOKUP_TABLE default\n";
 
     for(int j = 0; j < n; ++j)
         for(int i = 0; i < n; ++i)

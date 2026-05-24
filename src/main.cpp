@@ -26,6 +26,7 @@ int main (int argc, char **argv)
     Function f = [&](Real x, Real y) -> Real {return fun_parser(x,y);};
 
     LaplaceProblem problem;
+    problem.force = f;
     Domain domain(n, problem);
     JacobiSolver solver(1000, 1e-5);
 
