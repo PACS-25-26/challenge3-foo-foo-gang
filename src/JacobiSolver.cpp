@@ -37,8 +37,8 @@ void JacobiSolver::solve(Domain &d) const
                 Real x = d.getCoord(global_offset + i);
                 Real y = d.getCoord(j);
 
-                local_U(i,j) = (local_U_prev(i-1,j) + local_U_prev(i+1,j) + 
-                                local_U_prev(i,j-1) + local_U_prev(i,j+1) + f(x,y)) / (4*h*h);
+                local_U(i,j) = 0.25 * (local_U_prev(i-1,j) + local_U_prev(i+1,j) + 
+                                local_U_prev(i,j-1) + local_U_prev(i,j+1) + f(x,y)*h*h);
 
                 sq_diff += (local_U(i,j) - local_U_prev(i,j)) * (local_U(i,j) - local_U_prev(i,j));
             }
