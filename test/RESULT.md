@@ -21,7 +21,7 @@ The solver was tested for grid sizes `N ∈ {16, 32, 64, 128, 256}` with forcing
 MPI parallelism shows clear and consistent speedups, especially at larger grid sizes:
 
 - **N = 128**: going from 1 to 4 MPI processes yields a **~2.5× speedup** (0.428 s → 0.170 s).
-- **N = 256**: going from 1 to 4 MPI processes yields a **~3.2× speedup** (6.48 s → 2.05 s), approaching the theoretical maximum of 4× for 4 processes.
+- **N = 256**: going from 1 to 4 MPI processes yields a **~3.2× speedup** (6.48 s → 2.05 s).
 
 At small grids (N = 16), using 4 MPI processes is actually *slower* than the serial case. This is expected an due to the MPI communication overhead.
 
