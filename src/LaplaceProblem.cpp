@@ -2,12 +2,32 @@
 #include <fstream>
 #include <mpi.h>
 
+Real Domain::compute_L2error(const Function &u_ex) const
+{
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    if(rank != 0) return 0.;
+
+    Real err_L2 = 0.;
+
+    for(size_t i = 1; i < n-1; ++i){
+        for(size_t j = 1; j < n-1; ++j){
+            Real x = getCoord(i);
+            Real y = getCoord(j);
+            Real exact_val = u_ex(x,y);
+            err_L2 += (U(i,j) - exact_val) * (U(i,j) - exact_val);
+        }
+    }
+    return sqrt(h * err_L2);
+}
+
 void Domain::exportVTK(const std::string &filename) const
 {
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    if (rank != 0) return;
+    if(rank != 0) return;
 
     std::ofstream file(filename);
     if(!file.is_open()){
@@ -27,7 +47,7 @@ void Domain::exportVTK(const std::string &filename) const
     file << "SPACING " << h << " " << h << " 1\n";
 
     // Solution Points
-    file << "POINT DATA " << n*n << "\n";
+    file << "POINT_DATA " << n*n << "\n";
     file << "SCALARS u(xh,yh) double 1\n";
     file << "LOOKUP_TABLE default\n";
 

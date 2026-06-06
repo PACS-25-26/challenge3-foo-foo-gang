@@ -4,6 +4,7 @@
 #include "TypeTraits.hpp"
 #include <string>
 #include <iostream>
+#include <cmath>
 
 using namespace Traits;
 
@@ -20,6 +21,7 @@ class muParserWrapper
         try{
             parser.DefineVar("x", &var_x);
             parser.DefineVar("y", &var_y);
+            parser.DefineConst("pi", M_PI);
             parser.SetExpr(expression);
         } catch (mu::Parser::exception_type &e){
             std::cerr << "muParser Error: " << e.GetMsg() << std::endl;

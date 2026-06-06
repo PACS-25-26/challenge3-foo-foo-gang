@@ -27,10 +27,33 @@ int main (int argc, char **argv)
 
     LaplaceProblem problem;
     problem.force = f;
-    Domain domain(n, problem);
-    JacobiSolver solver(1000, 1e-5);
+    problem.dirichlet_bc = [](Real x, Real y) -> Real {return 0.;};
 
-    solver.solve(domain);
+    Domain domain(n, problem);
+    JacobiSolver solver(100000, 1e-8);
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    double start_time = MPI_Wtime();
+
+    size_t iter_count = solver.solve(domain);
+    
+    Function u_ex = [](Real x, Real y) -> Real {
+        return sin(2*M_PI*x) * sin(2*M_PI*y);
+    };
+    Real err_L2 = domain.compute_L2error(u_ex);
+    
+    MPI_Barrier(MPI_COMM_WORLD);
+    double end_time = MPI_Wtime();
+    double local_elapsed = end_time - start_time;
+    double max_elapsed = 0.0;
+
+    MPI_Reduce(&local_elapsed, &max_elapsed, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+
+    if(rank == 0) {
+        std::cout << "N = " << n << " | Procs = " << size 
+                  << " | Time = " << max_elapsed << "s | L2 Error = " << err_L2 
+                  << " | Iters = " << iter_count << std::endl;
+    }
 
     domain.exportVTK("Laplace_Solution.vtk");
 

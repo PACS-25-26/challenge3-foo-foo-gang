@@ -9,7 +9,7 @@ struct LaplaceProblem
     Real lb = 0.;
     Real ub = 1.;
     Function force;
-    // Function bound_conds;
+    Function dirichlet_bc;
 };
 
 class Domain
@@ -28,6 +28,8 @@ class Domain
 
     inline Real getCoord(size_t i) const
     {return problem.lb + i * h;}
+
+    Real compute_L2error(const Function &u_ex) const;
 
     void exportVTK(const std::string &filename) const;
 };

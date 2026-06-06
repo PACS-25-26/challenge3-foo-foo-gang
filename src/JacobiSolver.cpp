@@ -3,7 +3,7 @@
 #include <mpi.h> 
 #include <omp.h>
 
-void JacobiSolver::solve(Domain &d) const
+size_t JacobiSolver::solve(Domain &d) const
 {
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -20,27 +20,58 @@ void JacobiSolver::solve(Domain &d) const
     
 
     Matrix local_U = Matrix::Zero(local_rows+2, cols);
-    Matrix local_U_prev = local_U;
 
     Real h = d.h;
     Function f = d.problem.force;
 
+    Matrix local_F = Matrix::Zero(local_rows+2, cols);
+    for (size_t i = 1; i < local_rows+1; ++i){
+        for (size_t j = 1; j < cols-1; ++j){
+            
+            Real x = d.getCoord(global_offset + i);
+            Real y = d.getCoord(j);
+            
+            local_F(i,j) = f(x,y); 
+        }
+    }
+
+    Function g_d = d.problem.dirichlet_bc;
+
+    if (g_d){
+        for (size_t i = 0; i < local_rows + 2; ++i) {
+            Real x = d.getCoord(global_offset + i);
+            local_U(i,0) = g_d(x, d.problem.lb); // Bordo y = 0
+            local_U(i,cols-1) = g_d(x,d.problem.ub); // Bordo y = 1
+        }
+        // 2. Riga in alto (SOLO per il rank 0)
+        if(rank == 0)
+            for (size_t j = 0; j < cols; ++j)
+                local_U(0,j) = g_d(d.problem.lb, d.getCoord(j)); // Bordo x = 0
+        
+        if(rank == size-1)
+            for (size_t j = 0; j < cols; ++j)
+                local_U(local_rows + 1, j) = g_d(d.problem.ub, d.getCoord(j)); // Bordo x = 1
+    }
+
+    Matrix local_U_prev = local_U;
+
     size_t it = 0;
     int global_converged = 0;
-    Real err = tolerance + 1.;
+    Real err = tolerance + 100.;
 
     while (it <= max_iter && global_converged == 0){
         Real sq_diff = 0.;
+
+        #pragma omp parallel for reduction(+:sq_diff)
         for (size_t i = 1; i < local_rows+1; ++i){
             for (size_t j = 1; j < cols-1; ++j){
-    
-                Real x = d.getCoord(global_offset + i);
-                Real y = d.getCoord(j);
 
-                local_U(i,j) = 0.25 * (local_U_prev(i-1,j) + local_U_prev(i+1,j) + 
-                                local_U_prev(i,j-1) + local_U_prev(i,j+1) + f(x,y)*h*h);
+                Real val = 0.25 * (local_U_prev(i-1,j) + local_U_prev(i+1,j) + 
+                                local_U_prev(i,j-1) + local_U_prev(i,j+1) + local_F(i,j)*h*h);
 
-                sq_diff += (local_U(i,j) - local_U_prev(i,j)) * (local_U(i,j) - local_U_prev(i,j));
+                Real diff = val - local_U_prev(i,j);
+                local_U(i,j) = val;
+                sq_diff += diff * diff;
             }
         }
 
@@ -92,10 +123,21 @@ void JacobiSolver::solve(Domain &d) const
         }
     }
 
-    MPI_Gatherv(local_U.row(1).data(), local_elements, MPI_DOUBLE,
+    MPI_Gatherv(local_U_prev.row(1).data(), local_elements, MPI_DOUBLE,
                 d.U.row(1).data(), recv_counts.data(), displacements.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    // Se BCs sono = 0 va bene così, ma nisogna aggiungere riga 0 e n-1 se le considero Non Nulle
+    if(rank == 0){
+        for(size_t k = 0; k < d.n; ++k){
+            Real coord = d.getCoord(k);
+            d.U(0,k) = g_d(d.problem.lb, coord);      // Top
+            d.U(d.n-1, k) = g_d(d.problem.ub, coord); // Bottom
+            d.U(k, 0) = g_d(coord, d.problem.lb);      // Left
+            d.U(k, d.n-1) = g_d(coord, d.problem.ub); // Right        
+        }
+    }
 
-    std::cout << "Problem Solved" << std::endl;
+    if (rank == 0)
+        std::cout << "Problem solved" << std::endl;
+
+    return it;
 }
