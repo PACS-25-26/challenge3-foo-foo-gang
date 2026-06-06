@@ -59,8 +59,8 @@ The solver is configured in `src/main.cpp` with:
 - **Exact solution** (for L2 error): `u_ex(x,y) = sin(2πx)sin(2πy)`
 
 To test with the inhomogeneous BCs, update the `dirichlet_bc` lambda and `u_ex` function in `main.cpp` accordingly, then recompile. For example: 
-- `g(x,y) = x^2 + y^2`,
-- `u_ex(x,y) = x^2 + y^2`, 
+- `g(x,y) = x² + y²`,
+- `u_ex(x,y) = x² + y²`, 
 - `f(x,y) = -4`
  
 should converge with L2 error near to zero.
