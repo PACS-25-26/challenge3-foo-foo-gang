@@ -15,8 +15,8 @@ Real Domain::compute_L2error(const Function &u_ex) const
 
     for(size_t i = 1; i < n-1; ++i){
         for(size_t j = 1; j < n-1; ++j){
-            Real x = getCoord(i);
-            Real y = getCoord(j);
+            Real x = getCoord(j);
+            Real y = getCoord(i);
             Real exact_val = u_ex(x,y);
             err_L2 += (U(i,j) - exact_val) * (U(i,j) - exact_val);
         }
@@ -54,8 +54,8 @@ void Domain::exportVTK(const std::string &filename) const
     file << "SCALARS u(xh,yh) double 1\n";
     file << "LOOKUP_TABLE default\n";
 
-    for(int j = 0; j < n; ++j)
-        for(int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
+        for(int j = 0; j < n; ++j)
             file << U(i,j) << "\n";
 
     file.close();
