@@ -1,13 +1,19 @@
 #pragma once
 
-#include <muParser.h>
 #include "TypeTraits.hpp"
+
+#include <muParser.h>
 #include <string>
 #include <iostream>
 #include <cmath>
 
 using namespace Traits;
 
+/**
+ * @class muParserWrapper
+ * @brief This class provides a simple interface for a function wrapper, using
+ * the muParser library
+ */
 class muParserWrapper
 {
     private:

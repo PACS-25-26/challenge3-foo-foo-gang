@@ -1,7 +1,9 @@
 #include "LaplaceProblem.hpp"
+
 #include <fstream>
 #include <mpi.h>
 
+// used properly only by rank 0
 Real Domain::compute_L2error(const Function &u_ex) const
 {
     int rank;
@@ -22,6 +24,7 @@ Real Domain::compute_L2error(const Function &u_ex) const
     return sqrt(h * err_L2);
 }
 
+// used properly only by rank 0
 void Domain::exportVTK(const std::string &filename) const
 {
     int rank;

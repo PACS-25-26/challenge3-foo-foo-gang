@@ -11,9 +11,12 @@ size_t JacobiSolver::solve(Domain &d) const
 
     int rows = d.n;
     int cols = d.n;
+    // internal nodes are partitioned among MPI processes 
     int local_rows = (rows-2) / size;
+    // if rows and processes are not multiples, compute the remaining rows
     int rest = (rows-2) % size;
     
+    // global offset compuation for local indexes mapping into the whole grid
     int global_offset = (rank < rest) ? rank*(local_rows+1) : 
                                         (rank-rest)*local_rows + rest*(local_rows+1);
     if (rank < rest) ++local_rows;
@@ -40,17 +43,16 @@ size_t JacobiSolver::solve(Domain &d) const
     if (g_d){
         for (size_t i = 0; i < local_rows + 2; ++i) {
             Real x = d.getCoord(global_offset + i);
-            local_U(i,0) = g_d(x, d.problem.lb); // Bordo y = 0
-            local_U(i,cols-1) = g_d(x,d.problem.ub); // Bordo y = 1
+            local_U(i,0) = g_d(x, d.problem.lb); // y = 0
+            local_U(i,cols-1) = g_d(x,d.problem.ub); // y = 1
         }
-        // 2. Riga in alto (SOLO per il rank 0)
         if(rank == 0)
             for (size_t j = 0; j < cols; ++j)
-                local_U(0,j) = g_d(d.problem.lb, d.getCoord(j)); // Bordo x = 0
+                local_U(0,j) = g_d(d.problem.lb, d.getCoord(j)); // x = 0
         
         if(rank == size-1)
             for (size_t j = 0; j < cols; ++j)
-                local_U(local_rows + 1, j) = g_d(d.problem.ub, d.getCoord(j)); // Bordo x = 1
+                local_U(local_rows + 1, j) = g_d(d.problem.ub, d.getCoord(j)); // x = 1
     }
 
     Matrix local_U_prev = local_U;
@@ -129,15 +131,12 @@ size_t JacobiSolver::solve(Domain &d) const
     if(rank == 0){
         for(size_t k = 0; k < d.n; ++k){
             Real coord = d.getCoord(k);
-            d.U(0,k) = g_d(d.problem.lb, coord);      // Top
+            d.U(0,k) = g_d(d.problem.lb, coord); // Top
             d.U(d.n-1, k) = g_d(d.problem.ub, coord); // Bottom
-            d.U(k, 0) = g_d(coord, d.problem.lb);      // Left
+            d.U(k, 0) = g_d(coord, d.problem.lb); // Left
             d.U(k, d.n-1) = g_d(coord, d.problem.ub); // Right        
         }
     }
-
-    if (rank == 0)
-        std::cout << "Problem solved" << std::endl;
 
     return it;
 }
