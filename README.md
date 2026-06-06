@@ -31,7 +31,7 @@ The problem is solved with forcing term `f(x,y) = 8π²sin(2πx)sin(2πy)`, whos
 ├── test/
 │   ├── run_tests.sh            # Scalability benchmark script
 |   ├── hw.info                 # Hardware info
-│   └── data/                   # Collected benchmark results
+│   └── data/                   # Collected benchmark results and solution plots
 └── Makefile
 ```
 
@@ -52,3 +52,8 @@ The problem is solved with forcing term `f(x,y) = 8π²sin(2πx)sin(2πy)`, whos
 ---
 
 The Makefile expects Eigen to be found either under `$(PACS_ROOT)/eigen3` or `/usr/include/eigen3`. Adjust `PACS_ROOT` at the top of the Makefile if needed.
+
+---
+
+In test/data some example of solution and grid plots can be found, obtained opening the solution in VTK format with ParaView.
+It is present also a plot (within the corresponding grid) of a solution with inhomogeneous Dirichlet BCs.

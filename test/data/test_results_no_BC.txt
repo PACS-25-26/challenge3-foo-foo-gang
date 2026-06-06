@@ -1,0 +1,29 @@
+===================================================================================
+                        BENCHMARK JACOBI SOLVER
+===================================================================================
+>>> TEST N = 16
+   [1 MPI, 1 OMP]  N = 16 | Procs = 1 | Time = 0.000589806s | L2 Error = 0.0285647 | Iters = 186
+   [2 MPI, 1 OMP]  N = 16 | Procs = 2 | Time = 0.000828604s | L2 Error = 0.0285647 | Iters = 182
+   [4 MPI, 1 OMP]  N = 16 | Procs = 4 | Time = 0.00127766s | L2 Error = 0.0285647 | Iters = 180
+   [4 MPI, 2 OMP]  N = 16 | Procs = 4 | Time = 0.117265s | L2 Error = 0.0285647 | Iters = 180
+>>> TEST N = 32
+   [1 MPI, 1 OMP]  N = 32 | Procs = 1 | Time = 0.00567909s | L2 Error = 0.00954942 | Iters = 754
+   [2 MPI, 1 OMP]  N = 32 | Procs = 2 | Time = 0.00470614s | L2 Error = 0.00954922 | Iters = 737
+   [4 MPI, 1 OMP]  N = 32 | Procs = 4 | Time = 0.00520551s | L2 Error = 0.00954903 | Iters = 725
+   [4 MPI, 2 OMP]  N = 32 | Procs = 4 | Time = 0.129007s | L2 Error = 0.00954903 | Iters = 725
+>>> TEST N = 64
+   [1 MPI, 1 OMP]  N = 64 | Procs = 1 | Time = 0.0348731s | L2 Error = 0.0032892 | Iters = 2911
+   [2 MPI, 1 OMP]  N = 64 | Procs = 2 | Time = 0.024552s | L2 Error = 0.00328837 | Iters = 2842
+   [4 MPI, 1 OMP]  N = 64 | Procs = 4 | Time = 0.0166302s | L2 Error = 0.00328737 | Iters = 2781
+   [4 MPI, 2 OMP]  N = 64 | Procs = 4 | Time = 0.0890919s | L2 Error = 0.00328737 | Iters = 2781
+>>> TEST N = 128
+   [1 MPI, 1 OMP]  N = 128 | Procs = 1 | Time = 0.437942s | L2 Error = 0.00114131 | Iters = 10982
+   [2 MPI, 1 OMP]  N = 128 | Procs = 2 | Time = 0.23434s | L2 Error = 0.00113793 | Iters = 10699
+   [4 MPI, 1 OMP]  N = 128 | Procs = 4 | Time = 0.164943s | L2 Error = 0.00113353 | Iters = 10435
+   [4 MPI, 2 OMP]  N = 128 | Procs = 4 | Time = 0.217494s | L2 Error = 0.00113353 | Iters = 10435
+>>> TEST N = 256
+   [1 MPI, 1 OMP]  N = 256 | Procs = 1 | Time = 6.81709s | L2 Error = 0.000371046 | Iters = 40840
+   [2 MPI, 1 OMP]  N = 256 | Procs = 2 | Time = 3.51561s | L2 Error = 0.000357402 | Iters = 39698
+   [4 MPI, 1 OMP]  N = 256 | Procs = 4 | Time = 2.07014s | L2 Error = 0.000338878 | Iters = 38595
+   [4 MPI, 2 OMP]  N = 256 | Procs = 4 | Time = 2.31978s | L2 Error = 0.000338878 | Iters = 38595
+   
