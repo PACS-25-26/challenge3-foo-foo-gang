@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project implements a **parallel matrix-free solver** for the 2D Laplace equation on a unit square domain:
+This project implements a **parallel solver** for the 2D Laplace equation on a unit square domain:
 
 ```
 −∆u = f(x,y),   (x,y) ∈ (0,1)²
